@@ -1,0 +1,6 @@
+#!/bin/sh
+out=./numbers/`echo $1 | sed 's!.*streets/\(.*\)/!\1!' | tr '/' '-' | sed 's!\(7-49[59]-\([0-9]*\).*\)!\2/\1!'`
+dir=./numbers/`echo $1 | sed 's!.*streets/\(.*\)/!\1!' | tr '/' '-' | sed 's!\(7-49[59]-\([0-9]*\).*\)!\2!'`
+mkdir $dir
+{ curl $1 | grep -Eo -e "<tr class='table_(even|odd)_row'><td><a class='simple_link' href='http://spravkaru.net/peoples/7/49[59]/[0-9]*/'>([0-9]*)</a></td><td><a class='simple_link' href='http://spravkaru.net/peoples/7/49[59]/[0-9]*/'>([^<]*)</a></td><td><a class='address' href='/streets/7/49[59]/[0-9]*/'>([^<]*)</a></td></tr>" -e "<tr class='table_(even|odd)_row'><td><a class='simple_link' href='http://spravkaru.net/peoples/7/49[59]/[0-9]*/'>([0-9]*)</a></td><td><a class='simple_link' href='http://spravkaru.net/peoples/7/49[59]/[0-9]*/'>([^<]*)</a></td><td><a class='address' href='/streets/7/49[59]/[0-9]*/'>([^<]*)</a>, <a class='address' href='/streets/7/49[59]/[0-9]*/[0-9]*/'>([^<]*)</a>([^<]*)</td></tr>" | sed -Ef sed.sed; } > $out
+test -s $out || { echo "zero file for $1" >&2; exit 1; }
